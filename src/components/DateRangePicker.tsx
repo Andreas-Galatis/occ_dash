@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { DateRange } from '../types';
-import { subDays } from 'date-fns';
+import { subDays, subMonths, subYears } from 'date-fns';
 
 interface DateRangePickerProps {
   value: DateRange;
@@ -17,17 +17,20 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({ value, onChang
       case '7d':
         start = subDays(end, 7);
         break;
+      case '14d':
+        start = subDays(end, 14);
+        break;
       case '30d':
         start = subDays(end, 30);
         break;
       case '3m':
-        start = subDays(end, 90);
+        start = subMonths(end, 3);
         break;
       case '1y':
-        start = subDays(end, 365);
+        start = subYears(end, 1);
         break;
       default:
-        start = subDays(end, 28);
+        start = subDays(end, 7);
     }
 
     onChange({ start, end });
@@ -39,10 +42,11 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({ value, onChang
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays <= 7) return '7d';
+    if (diffDays <= 14) return '14d';
     if (diffDays <= 30) return '30d';
     if (diffDays <= 90) return '3m';
     if (diffDays <= 365) return '1y';
-    return '28d';
+    return '7d';
   };
 
   return (
@@ -55,7 +59,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({ value, onChang
           onChange={(e) => handleRangeChange(e.target.value)}
         >
           <option value="7d">Last 7 Days</option>
-          <option value="28d">Last 28 Days</option>
+          <option value="14d">Last 14 Days</option>
           <option value="30d">Last 30 Days</option>
           <option value="3m">Last 3 Months</option>
           <option value="1y">Last Year</option>

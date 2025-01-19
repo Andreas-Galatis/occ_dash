@@ -23,16 +23,19 @@ interface BarChartProps {
   data: {
     labels: string[];
     datasets: {
-      label: string;
+      label?: string;
       data: number[];
       backgroundColor: string[];
+      borderRadius?: number;
+      borderSkipped?: boolean;
     }[];
   };
+  options?: any;
   height?: string;
 }
 
-export const BarChart: React.FC<BarChartProps> = ({ data, height = '300px' }) => {
-  const options = {
+export const BarChart: React.FC<BarChartProps> = ({ data, options, height = '300px' }) => {
+  const defaultOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -49,7 +52,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data, height = '300px' }) =>
 
   return (
     <div style={{ height }}>
-      <Bar options={options} data={data} />
+      <Bar options={options || defaultOptions} data={data} />
     </div>
   );
 };

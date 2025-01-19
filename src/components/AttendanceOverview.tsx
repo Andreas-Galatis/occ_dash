@@ -1,6 +1,6 @@
 import React from 'react';
-import { LineChart } from './charts/LineChart';
-import { format, subDays } from 'date-fns';
+import { BarChart } from './charts/BarChart';
+import { format } from 'date-fns';
 import { Users, TrendingUp, TrendingDown } from 'lucide-react';
 
 interface AttendanceOverviewProps {
@@ -9,7 +9,13 @@ interface AttendanceOverviewProps {
   adults: number;
   youth: number;
   kids: number;
-  trend: number[];
+  trend: {
+    date: Date;
+    total: number;
+    adults: number;
+    youth: number;
+    kids: number;
+  }[];
 }
 
 export const AttendanceOverview: React.FC<AttendanceOverviewProps> = ({
@@ -21,16 +27,35 @@ export const AttendanceOverview: React.FC<AttendanceOverviewProps> = ({
   trend,
 }) => {
   const chartData = {
-    labels: Array.from({ length: trend.length }, (_, i) => 
-      format(subDays(new Date(), trend.length - 1 - i), 'MMM d')
-    ),
+    labels: trend.map(t => format(new Date(t.date), 'MMM d')),
     datasets: [
       {
-        label: 'Total Attendance',
-        data: trend,
-        borderColor: '#3B82F6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        fill: true,
+        label: 'Total',
+        data: trend.map(t => t.total),
+        backgroundColor: '#C4A962', // Gold (primary brand color)
+        borderRadius: 8,
+        borderSkipped: false,
+      },
+      {
+        label: 'Adults',
+        data: trend.map(t => t.adults),
+        backgroundColor: '#2B5174', // Deep blue
+        borderRadius: 8,
+        borderSkipped: false,
+      },
+      {
+        label: 'Youth',
+        data: trend.map(t => t.youth),
+        backgroundColor: '#4A90E2', // Bright blue
+        borderRadius: 8,
+        borderSkipped: false,
+      },
+      {
+        label: 'Kids',
+        data: trend.map(t => t.kids),
+        backgroundColor: '#67B8CB', // Light blue
+        borderRadius: 8,
+        borderSkipped: false,
       },
     ],
   };
@@ -40,11 +65,26 @@ export const AttendanceOverview: React.FC<AttendanceOverviewProps> = ({
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: 'top' as const,
+        labels: {
+          font: {
+            family: 'Inter, sans-serif',
+            size: 12,
+          },
+          usePointStyle: true,
+          padding: 20,
+        },
       },
       tooltip: {
-        mode: 'index',
-        intersect: false,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: 'white',
+        bodyColor: 'white',
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          label: (context: any) => `${context.dataset.label}: ${context.parsed.y} attendees`,
+        },
       },
     },
     scales: {
@@ -52,11 +92,29 @@ export const AttendanceOverview: React.FC<AttendanceOverviewProps> = ({
         grid: {
           display: false,
         },
+        ticks: {
+          font: {
+            family: 'Inter, sans-serif',
+            size: 12,
+          },
+          color: '#666',
+          maxRotation: 45,
+          minRotation: 45,
+        },
       },
       y: {
         beginAtZero: true,
         grid: {
           color: 'rgba(0, 0, 0, 0.05)',
+        },
+        ticks: {
+          font: {
+            family: 'Inter, sans-serif',
+            size: 12,
+          },
+          color: '#666',
+          padding: 8,
+          callback: (value: number) => value.toLocaleString(),
         },
       },
     },
@@ -67,8 +125,8 @@ export const AttendanceOverview: React.FC<AttendanceOverviewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
         <div className="lg:col-span-2">
           <div className="flex items-start space-x-4">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Users className="text-blue-600" size={24} />
+            <div className="p-3 bg-[#C4A962] bg-opacity-10 rounded-lg">
+              <Users className="text-[#C4A962]" size={24} />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Total Attendance</h2>
@@ -83,7 +141,7 @@ export const AttendanceOverview: React.FC<AttendanceOverviewProps> = ({
                     <TrendingDown size={20} className="mr-1" />
                   )}
                   <span className="font-medium">
-                    {Math.abs(change)}%
+                    {Math.abs(change).toFixed(1)}%
                   </span>
                 </div>
               </div>
@@ -106,8 +164,8 @@ export const AttendanceOverview: React.FC<AttendanceOverviewProps> = ({
         </div>
       </div>
       
-      <div className="h-64">
-        <LineChart data={chartData} options={chartOptions} />
+      <div className="h-80">
+        <BarChart data={chartData} options={chartOptions} />
       </div>
     </div>
   );
