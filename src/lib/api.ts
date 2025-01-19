@@ -56,6 +56,7 @@ export async function fetchMetrics(dateRange: DateRange): Promise<Metric[]> {
       youth: calculateAverage(sortedData.map(record => record.Oyth || 0)),
       kids: calculateAverage(sortedData.map(record => record.Okids || 0)),
     };
+    console.log('Current averages:', currentAverages);
 
     // Calculate previous period averages
     const periodLength = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24));
@@ -69,6 +70,7 @@ export async function fetchMetrics(dateRange: DateRange): Promise<Metric[]> {
       youth: calculateAverage(previousData.map(record => record.Oyth || 0)),
       kids: calculateAverage(previousData.map(record => record.Okids || 0)),
     };
+    console.log('Previous averages:', previousAverages);
 
     // Calculate percentage changes
     const calculateChange = (current: number, previous: number) => {

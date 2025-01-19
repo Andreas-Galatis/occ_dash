@@ -39,7 +39,7 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Church Analytics Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Overflow City Church Analytics Dashboard</h1>
           <DateRangePicker value={dateRange} onChange={setDateRange} />
         </div>
 
@@ -65,9 +65,9 @@ function App() {
               <AttendanceOverview 
                 total={metrics[0].value}
                 change={metrics[0].change}
-                adults={metrics[0].value - metrics[1].value}
-                youth={85}
-                kids={35}
+                adults={metrics[1].value}
+                youth={metrics[2].value}
+                kids={metrics[3].value}
                 trend={metrics[0].trend}
               />
             </div>

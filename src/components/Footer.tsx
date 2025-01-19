@@ -12,21 +12,20 @@ export function Footer() {
               className="h-12 mb-4"
             />
             <p className="text-gray-400">
-              A place where faith overflows and lives are transformed.
+              Encounter God, Discover Purpose, and Make a Difference
             </p>
           </div>
           
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
-            <p className="text-gray-400">123 Church Street</p>
-            <p className="text-gray-400">City, State 12345</p>
-            <p className="text-gray-400">contact@overflowcity.church</p>
+            <p className="text-gray-400">8633 Colesville Rd</p>
+            <p className="text-gray-400">Silver Spring, MD 20910</p>
+            <p className="text-gray-400">community@overflowcitychurch.com</p>
           </div>
           
           <div>
             <h3 className="text-lg font-semibold mb-4">Service Times</h3>
-            <p className="text-gray-400">Sunday: 9:00 AM & 11:00 AM</p>
-            <p className="text-gray-400">Wednesday: 7:00 PM</p>
+            <p className="text-gray-400">Sunday: 10:00 AM</p>
           </div>
         </div>
         
