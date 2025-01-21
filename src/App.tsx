@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { LoginForm } from './components/LoginForm';
 import { MetricCard } from './components/MetricCard';
 import { DateRangePicker } from './components/DateRangePicker';
 import { YouTubeSection } from './components/YouTubeSection';
@@ -9,12 +13,12 @@ import { useAnalytics } from './hooks/useAnalytics';
 import { DateRange } from './types';
 import { subDays } from 'date-fns';
 
-function App() {
-  const [dateRange, setDateRange] = useState<DateRange>({
+function Dashboard() {
+  const [dateRange, setDateRange] = React.useState<DateRange>({
     start: subDays(new Date(), 30),
     end: new Date(),
   });
-  const [showEventsModal, setShowEventsModal] = useState(false);
+  const [showEventsModal, setShowEventsModal] = React.useState(false);
 
   const { 
     metrics, 
@@ -39,7 +43,7 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Overflow City Church Analytics Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Church Analytics Dashboard</h1>
           <DateRangePicker value={dateRange} onChange={setDateRange} />
         </div>
 
@@ -78,13 +82,13 @@ function App() {
                 title="New Visitors"
                 value={metrics[2].value}
                 change={metrics[2].change}
-                trend={metrics[2].trend}
+                trend={metrics[2].trend.map(t => t.total)}
               />
               <MetricCard
                 title="New Believers"
                 value={metrics[3].value}
                 change={metrics[3].change}
-                trend={metrics[3].trend}
+                trend={metrics[3].trend.map(t => t.total)}
               />
               <MetricCard
                 title="First-Time Decisions"
@@ -96,7 +100,7 @@ function App() {
 
             {/* YouTube and Events Sections */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {youtubeMetrics && <YouTubeSection data={youtubeMetrics} dateRange={dateRange} />}
+              {youtubeMetrics && <YouTubeSection data={youtubeMetrics} dateRange={dateRange} />}
               <div className="bg-white rounded-xl p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold">Recent Events</h2>
@@ -124,6 +128,27 @@ function App() {
         events={events}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginForm />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
